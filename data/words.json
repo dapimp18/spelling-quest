@@ -1,0 +1,11 @@
+{
+  "label": "Sample list — replace me!",
+  "words": [
+    { "id": "s1", "word": "necessary", "hint": "one collar, two sleeves (1 c, 2 s)", "sentence": "It is necessary to wear a coat in winter." },
+    { "id": "s2", "word": "rhythm", "hint": "rhythm has your two hard yardsticks in it", "sentence": "She has a great sense of rhythm when she dances." },
+    { "id": "s3", "word": "government", "hint": "don't forget the n before ment", "sentence": "The government announced a new plan today." },
+    { "id": "s4", "word": "beautiful", "hint": "big elephants are ugly", "sentence": "The sunset was beautiful." },
+    { "id": "s5", "word": "February", "hint": "there's an r after the b", "sentence": "Her birthday is in February." }
+  ],
+  "updatedAt": "2026-01-01T00:00:00.000Z"
+}

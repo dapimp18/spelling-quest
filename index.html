@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spelling Quest</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="index.html"><span class="logo">🏆</span> Spelling Quest</a>
+    <nav class="tabs">
+      <a href="index.html">Home</a>
+      <a href="manage.html">This Week's Words</a>
+      <a href="practice.html">Practice</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <h1 id="greeting">This week's words</h1>
+      <p class="sub" id="week-label">No word list yet.</p>
+
+      <div class="stat-grid" id="stats"></div>
+    </div>
+
+    <div class="card" id="word-preview-card">
+      <h2>Word list</h2>
+      <div id="word-preview"></div>
+    </div>
+
+    <div class="card">
+      <h2>Ready to practice?</h2>
+      <p class="sub">Pick practice mode and work through the list &mdash; mixed-up order, with extra turns for trickier words.</p>
+      <div class="btn-row">
+        <a class="btn" href="practice.html">Start practicing</a>
+        <a class="btn secondary" href="manage.html">Edit this week's words</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/app.js"></script>
+  <script>
+    (async function init() {
+      let list = Store.getList();
+
+      // Always check for a fresher published copy (e.g. edited on another device).
+      const remote = await GitHub.loadLatest(Store.getGithubConfig());
+      if (remote && (!list || new Date(remote.updatedAt) > new Date(list.updatedAt || 0))) {
+        list = remote;
+        Store.setList(list);
+      }
+
+      const words = list?.words || [];
+      document.getElementById("week-label").textContent = list
+        ? `${list.label || "Current list"} · ${words.length} word${words.length === 1 ? "" : "s"}`
+        : "No words yet — add some on the “This Week's Words” page.";
+
+      const progress = Store.getProgress();
+      const masteredCount = words.filter((w) => progress[w.id]?.mastered).length;
+      const statsEl = document.getElementById("stats");
+      if (words.length) {
+        statsEl.innerHTML = `
+          <div class="stat"><div class="value">${words.length}</div><div class="label">Words this week</div></div>
+          <div class="stat"><div class="value">${masteredCount}</div><div class="label">Mastered</div></div>
+          <div class="stat"><div class="value">${words.length - masteredCount}</div><div class="label">Still learning</div></div>
+        `;
+      } else {
+        statsEl.innerHTML = "";
+      }
+
+      const previewEl = document.getElementById("word-preview");
+      if (!words.length) {
+        previewEl.innerHTML = `<div class="empty-state"><div class="icon">✏️</div><p>No spelling words added yet.</p><a class="btn" href="manage.html">Add this week's words</a></div>`;
+      } else {
+        previewEl.innerHTML = words
+          .map((w, i) => {
+            const mastered = progress[w.id]?.mastered;
+            return `<div class="word-row">
+              <div class="num">${i + 1}</div>
+              <div class="fields">
+                <strong>${escapeHtml(w.word)}</strong>
+                ${w.sentence ? `<span class="help-text">${escapeHtml(w.sentence)}</span>` : ""}
+              </div>
+              ${mastered ? '<span class="pill">Mastered</span>' : ""}
+            </div>`;
+          })
+          .join("");
+      }
+    })();
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+  </script>
+</body>
+</html>

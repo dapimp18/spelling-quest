@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spelling Quest &mdash; Manage Words</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="index.html"><span class="logo">🏆</span> Spelling Quest</a>
+    <nav class="tabs">
+      <a href="index.html">Home</a>
+      <a href="manage.html">This Week's Words</a>
+      <a href="practice.html">Practice</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <h1>This week's words</h1>
+      <p class="sub">Add the spellings your daughter needs to learn this week. Each word can have an optional hint and an example sentence (used during practice).</p>
+
+      <div class="field">
+        <label for="week-label">List name</label>
+        <input type="text" id="week-label" placeholder="e.g. Week of 20 October" />
+      </div>
+
+      <div id="word-list"></div>
+
+      <div class="btn-row" style="margin-top: 14px;">
+        <button class="btn secondary" id="add-word">+ Add word</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Save</h2>
+      <p class="sub">Saving stores the list on this device. If GitHub sync is set up below, it also pushes the list so other devices (like your daughter's tablet) pick it up.</p>
+      <div class="btn-row">
+        <button class="btn" id="save-local">Save</button>
+        <button class="btn secondary" id="save-sync">Save &amp; sync to GitHub</button>
+        <button class="btn ghost" id="reset-progress">Reset practice progress</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <details class="settings">
+        <summary>⚙️ GitHub sync settings</summary>
+        <p class="help-text" style="margin-top:10px;">
+          To share the list across devices, point this app at a GitHub repo and a personal access token
+          with <strong>Contents: Read and write</strong> permission scoped to that repo. The token is stored
+          only in this browser (localStorage) and is only ever sent to api.github.com.
+        </p>
+        <div class="field" style="margin-top:14px;">
+          <label for="gh-owner">Repo owner</label>
+          <input type="text" id="gh-owner" placeholder="e.g. yourusername" />
+        </div>
+        <div class="field">
+          <label for="gh-repo">Repo name</label>
+          <input type="text" id="gh-repo" placeholder="e.g. spelling-quest" />
+        </div>
+        <div class="field">
+          <label for="gh-path">File path</label>
+          <input type="text" id="gh-path" placeholder="data/words.json" />
+        </div>
+        <div class="field">
+          <label for="gh-token">Personal access token (only needed on the device that edits words)</label>
+          <input type="password" id="gh-token" placeholder="github_pat_..." />
+        </div>
+        <div class="btn-row">
+          <button class="btn secondary" id="save-settings">Save settings</button>
+          <button class="btn ghost" id="load-latest">Load latest list from GitHub</button>
+        </div>
+      </details>
+    </div>
+  </main>
+
+  <script src="assets/app.js"></script>
+  <script>
+    let words = [];
+
+    function render() {
+      const el = document.getElementById("word-list");
+      if (!words.length) {
+        el.innerHTML = `<div class="empty-state"><div class="icon">📝</div><p>No words yet. Add the first one below.</p></div>`;
+        return;
+      }
+      el.innerHTML = words
+        .map(
+          (w, i) => `
+        <div class="word-row" data-id="${w.id}">
+          <div class="num">${i + 1}</div>
+          <div class="fields">
+            <input type="text" class="w-word" value="${escAttr(w.word)}" placeholder="Word (e.g. necessary)" />
+            <input type="text" class="w-hint" value="${escAttr(w.hint || "")}" placeholder="Hint (optional, e.g. one collar, two sleeves)" />
+            <input type="text" class="w-sentence" value="${escAttr(w.sentence || "")}" placeholder="Example sentence (optional)" />
+          </div>
+          <button class="remove" title="Remove word">&times;</button>
+        </div>`
+        )
+        .join("");
+
+      el.querySelectorAll(".word-row").forEach((row) => {
+        const id = row.dataset.id;
+        row.querySelector(".w-word").addEventListener("input", (e) => updateWord(id, "word", e.target.value));
+        row.querySelector(".w-hint").addEventListener("input", (e) => updateWord(id, "hint", e.target.value));
+        row.querySelector(".w-sentence").addEventListener("input", (e) => updateWord(id, "sentence", e.target.value));
+        row.querySelector(".remove").addEventListener("click", () => {
+          words = words.filter((w) => w.id !== id);
+          render();
+        });
+      });
+    }
+
+    function updateWord(id, field, value) {
+      const w = words.find((w) => w.id === id);
+      if (w) w[field] = value;
+    }
+
+    function escAttr(str) {
+      return String(str).replace(/"/g, "&quot;");
+    }
+
+    function currentList() {
+      return {
+        label: document.getElementById("week-label").value.trim() || "This week's words",
+        words: words
+          .filter((w) => w.word.trim().length)
+          .map((w) => ({ id: w.id, word: w.word.trim(), hint: w.hint.trim(), sentence: w.sentence.trim() })),
+        updatedAt: new Date().toISOString(),
+      };
+    }
+
+    document.getElementById("add-word").addEventListener("click", () => {
+      words.push({ id: makeId(), word: "", hint: "", sentence: "" });
+      render();
+      document.querySelectorAll(".w-word");
+      const rows = document.querySelectorAll(".word-row");
+      rows[rows.length - 1]?.querySelector(".w-word")?.focus();
+    });
+
+    document.getElementById("save-local").addEventListener("click", () => {
+      Store.setList(currentList());
+      showToast("Saved on this device.");
+    });
+
+    document.getElementById("save-sync").addEventListener("click", async () => {
+      const list = currentList();
+      Store.setList(list);
+      const btn = document.getElementById("save-sync");
+      btn.disabled = true;
+      btn.textContent = "Syncing…";
+      try {
+        await GitHub.push(Store.getGithubConfig(), list);
+        showToast("Saved and synced to GitHub!");
+      } catch (e) {
+        showToast(`Sync failed: ${e.message}`, 4000);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Save & sync to GitHub";
+      }
+    });
+
+    document.getElementById("reset-progress").addEventListener("click", () => {
+      if (confirm("Clear mastery progress for all words? This can't be undone.")) {
+        Store.resetProgress();
+        showToast("Progress reset.");
+      }
+    });
+
+    document.getElementById("save-settings").addEventListener("click", () => {
+      const cfg = {
+        owner: document.getElementById("gh-owner").value.trim(),
+        repo: document.getElementById("gh-repo").value.trim(),
+        path: document.getElementById("gh-path").value.trim() || "data/words.json",
+        token: document.getElementById("gh-token").value.trim(),
+      };
+      Store.setGithubConfig(cfg);
+      showToast("GitHub settings saved.");
+    });
+
+    document.getElementById("load-latest").addEventListener("click", async () => {
+      const remote = await GitHub.loadLatest(Store.getGithubConfig());
+      if (!remote) {
+        showToast("Could not load a published list (check settings, or none has been synced yet).", 4000);
+        return;
+      }
+      Store.setList(remote);
+      document.getElementById("week-label").value = remote.label || "";
+      words = (remote.words || []).map((w) => ({ ...w }));
+      render();
+      showToast("Loaded the latest published list.");
+    });
+
+    (function init() {
+      const list = Store.getList();
+      if (list) {
+        document.getElementById("week-label").value = list.label || "";
+        words = (list.words || []).map((w) => ({ ...w }));
+      }
+      render();
+
+      const cfg = Store.getGithubConfig();
+      document.getElementById("gh-owner").value = cfg.owner || "";
+      document.getElementById("gh-repo").value = cfg.repo || "";
+      document.getElementById("gh-path").value = cfg.path || "data/words.json";
+      document.getElementById("gh-token").value = cfg.token || "";
+    })();
+  </script>
+</body>
+</html>
