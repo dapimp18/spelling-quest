@@ -11,7 +11,6 @@
     <a class="brand" href="index.html"><span class="logo">🏆</span> Spelling Quest</a>
     <nav class="tabs">
       <a href="index.html">Home</a>
-      <a href="manage.html">This Week's Words</a>
       <a href="practice.html">Practice</a>
     </nav>
   </header>
@@ -34,7 +33,6 @@
       <p class="sub">Pick practice mode and work through the list &mdash; mixed-up order, with extra turns for trickier words.</p>
       <div class="btn-row">
         <a class="btn" href="practice.html">Start practicing</a>
-        <a class="btn secondary" href="manage.html">Edit this week's words</a>
       </div>
     </div>
   </main>
@@ -44,8 +42,8 @@
     (async function init() {
       let list = Store.getList();
 
-      // Always check for a fresher published copy (e.g. edited on another device).
-      const remote = await GitHub.loadLatest(Store.getGithubConfig());
+      // Always check for a fresher published copy (e.g. a new /add-words run).
+      const remote = await GitHub.loadLatest();
       if (remote && (!list || new Date(remote.updatedAt) > new Date(list.updatedAt || 0))) {
         list = remote;
         Store.setList(list);
@@ -71,7 +69,7 @@
 
       const previewEl = document.getElementById("word-preview");
       if (!words.length) {
-        previewEl.innerHTML = `<div class="empty-state"><div class="icon">✏️</div><p>No spelling words added yet.</p><a class="btn" href="manage.html">Add this week's words</a></div>`;
+        previewEl.innerHTML = `<div class="empty-state"><div class="icon">✏️</div><p>No spelling words added yet — use the <code>/add-words</code> skill in Claude Code to add this week's list.</p></div>`;
       } else {
         previewEl.innerHTML = words
           .map((w, i) => {

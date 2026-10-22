@@ -14,7 +14,7 @@ async function init() {
   progress = Store.getProgress();
   renderModePicker();
 
-  const remote = await GitHub.loadLatest(Store.getGithubConfig());
+  const remote = await GitHub.loadLatest();
   if (remote && (!list || new Date(remote.updatedAt) > new Date(list.updatedAt || 0))) {
     list = remote;
     Store.setList(list);
@@ -30,7 +30,7 @@ function renderModePicker() {
         <div class="empty-state">
           <div class="icon">✏️</div>
           <p>No words to practice yet.</p>
-          <a class="btn" href="manage.html">Add this week's words</a>
+          <p class="help-text">Use the <code>/add-words</code> skill in Claude Code to add this week's list.</p>
         </div>
       </div>`;
     return;
