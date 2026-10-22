@@ -51,3 +51,4 @@ then open `http://localhost:4173`.
 
 - Word pronunciation uses the browser's built-in text-to-speech, so quality depends on the device/browser (Chrome, Edge and Safari all support it well; make sure the device isn't muted).
 - There's no login and no backend: all data lives in the published `data/words.json` file and, for practice progress, each device's browser storage.
+- `manifest.json` pins this app's installable-webapp identity (`id`/`scope`/`start_url`) to `/spelling-quest/`, so "Add to Home Screen" treats it as a separate app from anything else hosted under the same `github.io` account (e.g. other GitHub Pages projects on the same username).
