@@ -1,11 +1,16 @@
 {
-  "label": "Sample list — replace me!",
+  "label": "Week of 26 October",
   "words": [
-    { "id": "s1", "word": "necessary", "hint": "one collar, two sleeves (1 c, 2 s)", "sentence": "It is necessary to wear a coat in winter." },
-    { "id": "s2", "word": "rhythm", "hint": "rhythm has your two hard yardsticks in it", "sentence": "She has a great sense of rhythm when she dances." },
-    { "id": "s3", "word": "government", "hint": "don't forget the n before ment", "sentence": "The government announced a new plan today." },
-    { "id": "s4", "word": "beautiful", "hint": "big elephants are ugly", "sentence": "The sunset was beautiful." },
-    { "id": "s5", "word": "February", "hint": "there's an r after the b", "sentence": "Her birthday is in February." }
+    { "id": "excellent-2026-10-26", "word": "excellent", "hint": "say it in two beats — ex-CEL-lent — to catch both Ls", "sentence": "Her artwork was excellent and won first prize." },
+    { "id": "existence-2026-10-26", "word": "existence", "hint": "exist + ence, just like absence", "sentence": "Scientists study the existence of life on other planets." },
+    { "id": "explanation-2026-10-26", "word": "explanation", "hint": "there's a PLAN hidden inside: ex-PLAN-ation", "sentence": "She gave a clear explanation of how the machine worked." },
+    { "id": "familiar-2026-10-26", "word": "familiar", "hint": "FAMILY is hidden at the start: famil-iar", "sentence": "The song sounded familiar, though I couldn't remember its name." },
+    { "id": "foreign-2026-10-26", "word": "foreign", "hint": "breaks the i-before-e rule, like reign and neighbour", "sentence": "We visited a foreign country for the first time last summer." },
+    { "id": "trader-2026-10-26", "word": "trader", "hint": "trade + r — someone who trades", "sentence": "The trader sold spices at the market every Saturday." },
+    { "id": "communication-2026-10-26", "word": "communication", "hint": "two Ms, then -unication, like 'commune'", "sentence": "Good communication helps a team work well together." },
+    { "id": "voyage-2026-10-26", "word": "voyage", "hint": "a voy-AGE takes an age — a long journey!", "sentence": "The ship set sail on a long voyage across the ocean." },
+    { "id": "disaster-2026-10-26", "word": "disaster", "hint": "dis + aster — aster means star, so it's like a 'bad star'", "sentence": "The flood was a disaster for the whole village." },
+    { "id": "victorious-2026-10-26", "word": "victorious", "hint": "victory + ious = victorious", "sentence": "The team felt victorious after winning the final match." }
   ],
-  "updatedAt": "2026-01-01T00:00:00.000Z"
+  "updatedAt": "2026-10-22T16:09:54.000Z"
 }
