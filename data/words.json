@@ -1,16 +1,16 @@
 {
-  "label": "Week of 23 November",
+  "label": "Week of 30 November",
   "words": [
-    { "id": "shield-2026-11-23", "word": "shield", "hint": "i before e: sh-i-e-ld", "sentence": "The knight held up his shield to block the blow." },
-    { "id": "forty-2026-11-23", "word": "forty", "hint": "forty has no u, even though four does!", "sentence": "There are forty children in the two classes combined." },
-    { "id": "frequently-2026-11-23", "word": "frequently", "hint": "fre-QU-ent-ly — don't forget the qu", "sentence": "She frequently visits her grandparents at the weekend." },
-    { "id": "government-2026-11-23", "word": "government", "hint": "don't forget the n before ment", "sentence": "The local government built a new school this year." },
-    { "id": "guarantee-2026-11-23", "word": "guarantee", "hint": "guard + antee — gua-ran-tee", "sentence": "The shop gave us a two-year guarantee on the washing machine." },
-    { "id": "harass-2026-11-23", "word": "harass", "hint": "one r, two s's — ha-rass", "sentence": "It is unkind to harass someone because they are different." },
-    { "id": "hindrance-2026-11-23", "word": "hindrance", "hint": "drop the e from hinder: hind-rance", "sentence": "The heavy rain was a hindrance to our plans for the picnic." },
-    { "id": "identity-2026-11-23", "word": "identity", "hint": "iden-TI-ty — say each part slowly", "sentence": "She had to show her passport to prove her identity." },
-    { "id": "immediate-2026-11-23", "word": "immediate", "hint": "two Ms: im-mediate", "sentence": "The teacher needed an immediate answer to the question." },
-    { "id": "individual-2026-11-23", "word": "individual", "hint": "DIVIDE is hidden inside: in-DIVID-ual", "sentence": "Each individual in the class was given their own project to complete." }
+    { "id": "interfere-2026-11-30", "word": "interfere", "hint": "inter + fere — ends like 'severe'", "sentence": "Please don't interfere when your sister is doing her homework." },
+    { "id": "interrupt-2026-11-30", "word": "interrupt", "hint": "inter + rupt — two r's in the middle", "sentence": "It's rude to interrupt someone while they are speaking." },
+    { "id": "cipher-2026-11-30", "word": "cipher", "hint": "ci-pher — the ph makes an f sound", "sentence": "The spies used a secret cipher to send their messages." },
+    { "id": "interpret-2026-11-30", "word": "interpret", "hint": "inter + pret, like in 'interpreter'", "sentence": "Can you interpret what this old letter is trying to say?" },
+    { "id": "translate-2026-11-30", "word": "translate", "hint": "tran-s-late — don't forget the s", "sentence": "She can translate French into English very quickly." },
+    { "id": "language-2026-11-30", "word": "language", "hint": "lan-GUA-ge — the u hides after the g", "sentence": "French is a beautiful language to learn." },
+    { "id": "leisure-2026-11-30", "word": "leisure", "hint": "ei like in 'seize' — lei-sure", "sentence": "We spent our leisure time playing board games." },
+    { "id": "lighting-2026-11-30", "word": "lighting", "hint": "light + ing — not the same as lightning!", "sentence": "The stage lighting changed colour during the song." },
+    { "id": "marvellous-2026-11-30", "word": "marvellous", "hint": "UK spelling has two Ls: marvel-l-ous", "sentence": "The fireworks display was absolutely marvellous." },
+    { "id": "mischievous-2026-11-30", "word": "mischievous", "hint": "no extra i: mis-chiev-ous, not mischiev-i-ous", "sentence": "The mischievous puppy chewed up all the slippers." }
   ],
-  "updatedAt": "2026-11-17T09:30:39.000Z"
+  "updatedAt": "2026-11-22T20:07:41.000Z"
 }
