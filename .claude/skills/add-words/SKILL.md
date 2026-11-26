@@ -13,7 +13,11 @@ list and publishes it.
 
 1. **Parse the input** the user gave (comma, newline, or numbered-list separated). Clean up
    stray punctuation/whitespace. If the user also gave a label for the week (e.g. "Week 7" or
-   a date), use it; otherwise default the label to `Week of <coming Monday's date, "D MMMM">`.
+   a date), use it; otherwise default the label to `Week of <coming Monday's date, "D MMMM">`,
+   where "coming Monday" is the next Monday strictly *after* today (if today is itself Monday,
+   that's 7 days ahead, not today) &mdash; this avoids relabeling the week already in
+   `data/words.json` when this runs late in the week. Check the current file's `label`/`updatedAt`
+   too, and bump to the following Monday instead if the computed label would collide with it.
 
 2. **For each word, generate:**
    - `hint`: a short, kid-friendly memory aid aimed at a 9-11 year old (Y5-6). Prefer something

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spelling Quest &mdash; Submit Words</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="icon" href="assets/icons/icon-192.png" />
+  <meta name="theme-color" content="#4f6df5" />
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="index.html"><span class="logo">🏆</span> Spelling Quest</a>
+    <nav class="tabs">
+      <a href="index.html">Home</a>
+      <a href="practice.html">Practice</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="card">
+      <h1>Submit this week's words</h1>
+      <p class="sub">
+        Type the week's spelling words below. Submitting takes you to GitHub to create an
+        issue with your list &mdash; once you confirm it there, an automated workflow generates
+        a hint and example sentence for each word and publishes them to the site within a
+        minute or two. No GitHub account on this device? You can just note the words down and
+        submit from wherever you're signed in.
+      </p>
+
+      <div class="field">
+        <label for="words">This week's words</label>
+        <textarea id="words" rows="5" placeholder="excellent, government, trader, voyage, disaster&#10;&#10;(comma or newline separated)"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="label">Week label (optional)</label>
+        <input type="text" id="label" placeholder="e.g. Week of 7 December &mdash; leave blank to auto-generate" />
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" id="submit-btn">Continue on GitHub</button>
+      </div>
+      <p class="help-text" id="status"></p>
+    </div>
+
+    <div class="card">
+      <h2>What happens next</h2>
+      <ol class="help-text" style="padding-left: 18px; line-height: 1.7;">
+        <li>GitHub opens a pre-filled "new issue" form &mdash; sign in if asked, then click <strong>Create</strong>.</li>
+        <li>Only the site owner's submission is processed automatically (this prevents random visitors from publishing words).</li>
+        <li>A GitHub Action generates kid-friendly hints and example sentences with Claude, updates the word list, and publishes it.</li>
+        <li>You'll see a comment on the issue confirming it worked (or explaining what went wrong).</li>
+      </ol>
+    </div>
+  </main>
+
+  <script>
+    const REPO = "dapimp18/spelling-quest";
+
+    document.getElementById("submit-btn").addEventListener("click", () => {
+      const words = document.getElementById("words").value.trim();
+      const label = document.getElementById("label").value.trim();
+      const status = document.getElementById("status");
+
+      if (!words) {
+        status.textContent = "Please enter at least one word.";
+        return;
+      }
+
+      const title = `[spelling-words] ${label || "New words"}`;
+      const body = [
+        `Words: ${words}`,
+        `Label: ${label}`,
+        "",
+        "(Submitted via the Spelling Quest words form.)",
+      ].join("\n");
+
+      const url = `https://github.com/${REPO}/issues/new?${new URLSearchParams({ title, body }).toString()}`;
+      status.textContent = "Opening GitHub…";
+      window.location.href = url;
+    });
+  </script>
+</body>
+</html>

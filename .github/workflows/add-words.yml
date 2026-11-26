@@ -1,0 +1,88 @@
+name: Add weekly spelling words
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+# Only these GitHub usernames can trigger a publish. Anyone else's matching
+# issue gets a polite comment and is closed without touching the word list.
+env:
+  AUTHORIZED_LOGINS: dapimp18
+
+jobs:
+  add-words:
+    if: startsWith(github.event.issue.title, '[spelling-words]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check submitter is authorized
+        id: auth
+        run: |
+          login="${{ github.event.issue.user.login }}"
+          if [[ ",$AUTHORIZED_LOGINS," == *",$login,"* ]]; then
+            echo "authorized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "authorized=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Reject unauthorized submission
+        if: steps.auth.outputs.authorized == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" \
+            --body "Thanks for the interest, but only the site owner can submit a word list this way."
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Checkout
+        if: steps.auth.outputs.authorized == 'true'
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        if: steps.auth.outputs.authorized == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        if: steps.auth.outputs.authorized == 'true'
+        run: pip install --quiet "anthropic>=1,<2"
+
+      - name: Generate words.json with Claude
+        if: steps.auth.outputs.authorized == 'true'
+        id: generate
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: python3 .github/scripts/add_words.py
+
+      - name: Commit and push
+        if: steps.auth.outputs.authorized == 'true'
+        run: |
+          git config user.name "spelling-quest-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/words.json
+          git commit -m "Add spelling words: ${{ steps.generate.outputs.label }}"
+          git push
+
+      - name: Comment success
+        if: steps.auth.outputs.authorized == 'true' && success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" \
+            --body "${{ steps.generate.outputs.summary }}
+
+          Published — the live site will pick this up within a minute or two."
+          gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+
+      - name: Comment failure
+        if: steps.auth.outputs.authorized == 'true' && failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" \
+            --body "Something went wrong publishing this list — check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details. Feel free to open a new submission once it's fixed."
