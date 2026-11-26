@@ -1,7 +1,7 @@
 {
-  "id": "/spelling-quest/",
-  "name": "Spelling Quest",
-  "short_name": "Spelling Quest",
+  "id": "/",
+"start_url": "/index.html",
+"scope": "/",
   "description": "Weekly spelling practice",
   "start_url": "/spelling-quest/index.html",
   "scope": "/spelling-quest/",
