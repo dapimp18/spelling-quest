@@ -159,7 +159,15 @@ function renderWrite(word, roundType) {
       </form>
     </div>`;
 
-  const speakIt = () => Speech.speak(roundType === "listen" && word.sentence ? word.sentence : word.word);
+  const speakIt = () => {
+    if (roundType === "listen") {
+      const parts = [`The word is: ${word.word}.`];
+      if (word.sentence) parts.push(word.sentence);
+      Speech.speakSequence(parts);
+    } else {
+      Speech.speak(word.word);
+    }
+  };
   document.getElementById("speak").addEventListener("click", speakIt);
   const input = document.getElementById("answer");
   input.focus();

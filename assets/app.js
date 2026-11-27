@@ -47,6 +47,22 @@ const Speech = {
     window.speechSynthesis.speak(utter);
     return true;
   },
+
+  // Speaks several pieces of text back-to-back as one queued sequence
+  // (e.g. the word, then a sentence using it) instead of one utterance.
+  speakSequence(texts, { rate = 0.9 } = {}) {
+    if (!("speechSynthesis" in window)) return false;
+    window.speechSynthesis.cancel();
+    texts
+      .filter(Boolean)
+      .forEach((text) => {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = rate;
+        utter.lang = "en-GB";
+        window.speechSynthesis.speak(utter);
+      });
+    return true;
+  },
 };
 
 // ---- Published word list ----
